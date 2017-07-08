@@ -83,11 +83,6 @@ int A(int binario[],int n,TipoItem pares[],int k){
     int x;
 
 
-    if(binaryToDecimal(binario,n)==0){
-            //printf("#########\n");
-        return 0;
-    }
-
       int *binarioAux = (int*)malloc(n*sizeof(int));
 
     for(i = 0; i< n ; i ++){
@@ -101,6 +96,12 @@ for(x = 0; x< n ; x ++){ printf("%d ", binarioAux[x]); }
             printf("\n DEPOIS %d\n",k);
 
       removeCruzamentos(k,binarioAux,n,pares);
+
+    if(binaryToDecimal(binarioAux,n)==0){
+            //printf("#########\n");
+        return 0;
+    }
+
 for(x = 0; x< n ; x ++){ printf("%d ", binarioAux[x]); }
             printf("\n");
 
