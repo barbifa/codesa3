@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include<math.h>
+
 typedef struct TipoItem {
     int bar;
     int dono;
@@ -84,36 +85,31 @@ void removeCruzamentos(int retirado,int binario[], int n,TipoItem pares[]){
 
 }
 
-int estaOcupado(Memo m[], long int decimal){
+int estaOcupado(Memo m[], long int decimal, int c){
+    return -1;
     int i=0;
-    while(m[i].indicador!=1){
+    while(i<c){
         if(m[i].decimal == decimal){
             return m[i].solucao;
-        }else{
-            return -1;
         }
         i++;
     }
-
+    return -1;
 
 }
 
-void salvarMemo(Memo m[],long int decimal,int solucao){
-    int i=0;
-
-    while(m[i].indicador!=-1){
-
-        i++;
-    }
-    m[i].decimal = decimal;
-    m[i].solucao = solucao;
-    m[i+1].indicador = -1;
+void salvarMemo(Memo m[],long int decimal,int solucao, int *c){
+    m[*c].decimal = decimal;
+    m[*c].solucao = solucao;
+    m[*c].indicador = 1;
+    *c++;
+    m[*c].indicador = -1;
 
 
 }
 
 
-int A(int binario[],int n,TipoItem pares[],int k, Memo memo[]){
+int A(int binario[],int n,TipoItem pares[],int k, Memo memo[],int *c){
     int m=0;
     int i,j;
     int r;
@@ -131,12 +127,10 @@ int A(int binario[],int n,TipoItem pares[],int k, Memo memo[]){
   //  printf("binarioaux = %d binario %d \n",binarioAux[i],binario[i]);
 
     }
-for(x = 0; x< n ; x ++){ printf("%d ", binarioAux[x]); }
-            printf("\n DEPOIS %d\n",k);
 
       removeCruzamentos(k,binarioAux,n,pares);
       decimal = binaryToDecimal(binarioAux,n);
-      result = estaOcupado(memo,decimal);
+      result = estaOcupado(memo,decimal,*c);
       if(result!=-1){
         return result;
       }
@@ -146,9 +140,6 @@ for(x = 0; x< n ; x ++){ printf("%d ", binarioAux[x]); }
             free(binarioAux);
         return 0;
     }
-
-for(x = 0; x< n ; x ++){ printf("%d ", binarioAux[x]); }
-            printf("\n");
 
 
     for(i = 0;i<n;i++){
@@ -164,7 +155,7 @@ for(x = 0; x< n ; x ++){ printf("%d ", binarioAux[x]); }
             //printf("  %d \nDEPOIS\n",i);
             //for(x = 0; x< n ; x ++){ printf("%d ", binarioAux[x]); }
             //printf("\n");
-            r = 1 + A(binarioAux,n,pares,i,memo);
+            r = 1 + A(binarioAux,n,pares,i,memo, c);
 
             if(r>m){
                 m = r;
@@ -176,8 +167,7 @@ for(x = 0; x< n ; x ++){ printf("%d ", binarioAux[x]); }
 
     }
 
-    salvarMemo(memo,decimal,m);
-    printf("Valor maximo : %d\n ",m);
+    salvarMemo(memo,decimal,m,c);
 
 
     return m;
@@ -192,6 +182,7 @@ int main()
     int n;
     scanf("%c",&op);
     scanf("%d",&n);
+    int c = 0;
   // int *memo = (int*)calloc(pow(2,n),sizeof(int));
 //    memset(memo,-1,pow(2,n));
     Memo *memo = (Memo*)malloc(pow(2,n)*sizeof(Memo));
@@ -211,7 +202,7 @@ int main()
     //removeCruzamentos(0,binario,3,par);
     for(i = 0; i <n ; i ++){
          printf("Chamada %d\n",i);
-         temp = A(binario,n,par,i,memo)+1;
+         temp = A(binario,n,par,i,memo,&c)+1;
          if(temp > m) m = temp;
     }
     printf("SOLUCAO: %d", m);
